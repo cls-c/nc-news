@@ -17,7 +17,7 @@ beforeEach(() => {
   return seed({ articleData, commentData, topicData, userData });
 });
 
-describe.only("GET /api/topics", () => {
+describe("GET /api/topics", () => {
   test("should return 200", () => {
     return request(app).get("/api/topics").expect(200);
   });
@@ -36,34 +36,33 @@ describe.only("GET /api/topics", () => {
         );
       });
   });
-  test.only("when invalid path, should return 404 message and error message to say invalid path. ", () => {
+  test("when invalid path, should return 404 message and error message to say invalid path. ", () => {
     return request(app)
       .get("/api/topicss")
       .expect(404)
       .then((response) => {
-        console.log("test invali");
-        // console.log(response.error);
+        expect(response.body.msg).toBe('invalid endpoint')
       });
   });
 });
 
-describe.only("GET /api/topics", () => {
-  test("should return 200", () => {
-    return request(app).get("/api/topics").expect(200);
-  });
-  test("should return an array of topic objects,each of which including slug and description ", () => {
-    return request(app)
-      .get("/api/topics")
-      .expect(200)
-      .then((response) => {
-        expect(response.body.topic).toEqual(
-          expect.arrayContaining([
-            expect.objectContaining({
-              slug: expect.any(String),
-              description: expect.any(String),
-            }),
-          ])
-        );
-      });
-  });
-});
+// describe("GET /api/", () => {
+//   test("should return 200", () => {
+//     return request(app).get("/api/").expect(200);
+//   });
+//   test("should return an array of topic objects,each of which including slug and description ", () => {
+//     return request(app)
+//       .get("/api/topics")
+//       .expect(200)
+//       .then((response) => {
+//         expect(response.body.topic).toEqual(
+//           expect.arrayContaining([
+//             expect.objectContaining({
+//               slug: expect.any(String),
+//               description: expect.any(String),
+//             }),
+//           ])
+//         );
+//       });
+//   });
+// });
