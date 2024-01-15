@@ -37,3 +37,22 @@ describe.only("GET /api/topics", () => {
   });
 });
 
+describe.only("GET /api/topics", () => {
+    test("should return 200", () => {
+      return request(app).get("/api/topics").expect(200);
+    });
+    test("should return an array of topic objects,each of which including slug and description ", () => {
+      return request(app)
+        .get("/api/topics")
+        .expect(200)
+        .then((response) => {
+          expect(response.body.topic).toEqual(
+            expect.arrayContaining([expect.objectContaining({
+              slug: expect.any(String),
+              description:expect.any(String)
+            })])
+          );
+        });
+    });
+  });
+
