@@ -56,7 +56,7 @@ describe("GET /api/topics", () => {
   });
 });
 
-describe("GET /api/", () => {
+describe("GET /api", () => {
   test("should return 200", () => {
     return request(app).get("/api").expect(200);
   });
@@ -66,6 +66,43 @@ describe("GET /api/", () => {
       .expect(200)
       .then((response) => {
         expect(response.body.apiInfo).toMatchObject(apiData);
+      });
+  });
+});
+
+describe("GET /api/articles/:article_id", () => {
+  test("should return 200", () => {
+    return request(app).get("/api/articles/1").expect(200);
+  });
+  test("should return an object, with the following keys: title, article_idtopic, author,body,created_at,votes,image_img_url  ", () => {
+    const articleId = 2;
+    return request(app)
+      .get("/api/articles/2")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              body: expect.any(String),
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+            }),
+          ])
+        );
+      });
+  });
+  test("should return  404 badRequest if provided id is invalid", () => {
+    const articleId = "invalid";
+    return request(app)
+      .get(`/api/articles/${articleId}`)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad Request: ID provided has not been found.");
       });
   });
 });
