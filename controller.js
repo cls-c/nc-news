@@ -1,4 +1,4 @@
-const { fetchTopics } = require("./model");
+const { fetchTopics, fetchApiInformation } = require("./model");
 
 exports.getTopics = async (req, res) => {
   try {
@@ -15,3 +15,12 @@ exports.getTopics = async (req, res) => {
 exports.invalidPath = (req, res) => {
   res.status(404).send({ msg: "invalid endpoint" });
 };
+
+exports.getApiInfo = async (req,res) => { 
+    try{
+        const apiInformation = fetchApiInformation()
+        res.status("200").send({apiInfo:apiInformation})
+    }catch{
+        return next(err);
+    }
+}
