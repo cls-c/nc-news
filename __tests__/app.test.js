@@ -6,7 +6,7 @@ const {
   topicData,
   userData,
 } = require("../db/data/test-data/index.js");
-const apiData = require("../endpoints.json")
+const apiData = require("../endpoints.json");
 const seed = require("../db/seeds/seed.js");
 const app = require("../app.js");
 
@@ -42,21 +42,18 @@ describe("GET /api/topics", () => {
       .get("/api/topicss")
       .expect(404)
       .then((response) => {
-        expect(response.body.msg).toBe('invalid endpoint')
+        expect(response.body.msg).toBe("invalid endpoint");
       });
   });
   test("test all topics in the test file are returned as part of the response by testing  if both of the array length equals ", () => {
-    const numOfArrayExpected = topicData.length
-    console.log(numOfArrayExpected)
+    const numOfArrayExpected = topicData.length;
     return request(app)
       .get("/api/topics")
       .expect(200)
       .then((response) => {
-        expect(response.body.topic.length).toEqual(numOfArrayExpected
-        );
+        expect(response.body.topic.length).toEqual(numOfArrayExpected);
       });
   });
-  
 });
 
 describe("GET /api/", () => {
@@ -68,7 +65,7 @@ describe("GET /api/", () => {
       .get("/api")
       .expect(200)
       .then((response) => {
-        expect(response.body.apiInfo).toMatchObject(apiData)
+        expect(response.body.apiInfo).toMatchObject(apiData);
       });
   });
 });
