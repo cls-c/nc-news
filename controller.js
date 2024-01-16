@@ -3,6 +3,7 @@ const {
   fetchApiInformation,
   fetchArticleWithCorrectId,
   fetchArticles,
+  fetchArticleComment,
 } = require("./model");
 
 exports.getTopics = async (req, res) => {
@@ -29,7 +30,7 @@ exports.getApiInfo = async (req, res) => {
   }
 };
 
-exports.getArticleWithID = async (req, res,next) => {
+exports.getArticleWithID = async (req, res, next) => {
   try {
     const { articleId } = req.params;
     const article = await fetchArticleWithCorrectId(articleId);
@@ -39,12 +40,22 @@ exports.getArticleWithID = async (req, res,next) => {
   }
 };
 
-exports.getAllArticles = async (req,res,next) => {
+exports.getAllArticles = async (req, res, next) => {
   try {
-    const {sort_by} = req.query
-    const allArticles = await fetchArticles(sort_by)
-    res.status("200").send({article: allArticles});
-  } catch (err){
+    const { sort_by } = req.query;
+    const allArticles = await fetchArticles(sort_by);
+    res.status("200").send({ article: allArticles });
+  } catch (err) {
     return next(err);
   }
-}
+};
+
+exports.getArticleComments = async (req, res, next) => {
+  try {
+    const { articleId } = req.params;
+    const associatedComments = await fetchArticleComment(articleId);
+    res.status("200").send({ article: associatedComments });
+  } catch (err) {
+    return next(err);
+  }
+};
