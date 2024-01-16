@@ -2,6 +2,7 @@ const {
   fetchTopics,
   fetchApiInformation,
   fetchArticleWithCorrectId,
+  fetchArticles,
 } = require("./model");
 
 exports.getTopics = async (req, res) => {
@@ -38,3 +39,13 @@ exports.getArticleWithID = async (req, res,next) => {
     return next(err);
   }
 };
+
+exports.getAllArticles = async (req,res,next) => {
+  try {
+    const allArticles = await fetchArticles()
+    console.log(allArticles)
+    res.status("200").send();
+  } catch (err){
+    return next(err);
+  }
+}
