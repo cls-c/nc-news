@@ -156,7 +156,7 @@ describe("GET /api/articles", () => {
       .get("/api/articles")
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toBeSorted({ key: "created_at" });
+        expect(body.article).toBeSorted({ key: "created_at" , descending:true});
       });
   });
   test("If specified a sortby optional parameter, will return object that is ordered by sorted by optional parameter, in asending order", () => {
@@ -181,3 +181,5 @@ describe("GET /api/articles", () => {
       });
   });
 });
+
+

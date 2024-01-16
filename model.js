@@ -53,7 +53,7 @@ exports.fetchArticles = (sortingKey) => {
     }.${sortingKey}`;
   }
   const query = format(
-    `SELECT articles.author,articles.title,articles.article_id,articles.topic,articles.created_at,articles.votes,articles.article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id ORDER BY ${sortBy} ASC;`
+    `SELECT articles.author,articles.title,articles.article_id,articles.topic,articles.created_at,articles.votes,articles.article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id ORDER BY ${sortBy} DESC;`
   );
   return db.query(query).then((data) => {
     return data.rows;
