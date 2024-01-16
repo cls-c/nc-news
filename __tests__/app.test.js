@@ -165,7 +165,7 @@ describe("GET /api/articles", () => {
       .get(`/api/articles?sort_by=${sortingKey}`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toBeSorted({ key: sortingKey });
+        expect(body.article).toBeSorted({ key: sortingKey, descending:true});
       });
   });
 
