@@ -70,7 +70,7 @@ describe("GET /api", () => {
   });
 });
 
-describe.only("GET /api/articles/:article_id", () => {
+describe("GET /api/articles/:article_id", () => {
   test("should return an object, with the following keys: title, article_idtopic, author,body,created_at,votes,image_img_url  ", () => {
     const articleId = 2;
     return request(app)
@@ -145,7 +145,7 @@ describe("GET /api/articles", () => {
               created_at: expect.any(String),
               votes: expect.any(Number),
               article_img_url: expect.any(String),
-              comment_count: expect.any(Number),
+              comment_count: expect.any(String),
             }),
           ])
         );

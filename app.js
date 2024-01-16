@@ -31,10 +31,33 @@ app.use((err,req,res,next)=>{
     if (err.code === '42703'){
       res.status(404).send({msg:'Bad Request: ID provided has not been found.'})
     }
-    // else {
-    //   next(err);
-    // }
+    else {
+      next(err);
+    }
   })
 
+  app.use((err,req,res,next)=>{
+    if (err.msg === 'Non-existent id'){
+      res.status(404).send({msg:'Bad Request: ID provided has not been found.'})
+    }
+    else {
+      next(err);
+    }
+  })
+
+  app.use((err,req,res,next)=>{
+    if (err.msg === 'invalid Sort_by'){
+      res.status(404).send({msg:'Bad Request: sorting key provided is invalid.'})
+    }
+    else {
+      next(err);
+    }
+  })
+  
+
+  app.use((err,req,res,next)=>{
+      res.status(500).send({msg:'Unexpected Error - Bad code in server.'})
+    }
+  )
 
 module.exports = app;
