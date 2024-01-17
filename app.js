@@ -16,8 +16,7 @@ app.get("/api", getApiInfo);
 app.get("/api/articles/:articleId", getArticleWithID);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:articleId/comments", getArticleComments);
-app.post("/api/articles/:articleId/comments",updateArticleComment);
-
+app.post("/api/articles/:articleId/comments", updateArticleComment);
 
 app.all("*", invalidPath);
 
@@ -49,20 +48,15 @@ app.use((err, req, res, next) => {
   }
 });
 
-
 app.use((err, req, res, next) => {
-    if (err.code === "23503") {
-        res
-        .status(404)
-        .send({ msg: "Bad Request: ID provided has not been found." });
-    } else {
-      next(err);
-    }
-  });
-
-
-
-
+  if (err.code === "23503") {
+    res
+      .status(404)
+      .send({ msg: "Bad Request: Parameter(s) provided has not been found." });
+  } else {
+    next(err);
+  }
+});
 
 app.use((err, req, res, next) => {
   if (err.msg === "invalid Sort_by") {

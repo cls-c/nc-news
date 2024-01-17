@@ -173,7 +173,7 @@ describe("GET /api/articles", () => {
   test("should return 404 badRequest if sort_by parameter is invalid", () => {
     const sortingKey = "invalid";
     return request(app)
-      .get(`/api/articles?sort_by=${sortingKey}`)
+      .get(`/api/articles?sort_by='invalid'`)
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe(
@@ -197,16 +197,15 @@ describe("GET /api/articles/:articleid/comments", () => {
       .get(`/api/articles/${articleId}/comments`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.article.length).toEqual(count);
+        expect(body.comments.length).toEqual(count);
       });
   });
   test("should return an array of object for the expected article id, each with the following keys: title, article_idtopic, author,created_at,votes,image_img_url,comment_count  ", () => {
-    const articleId = 1;
     return request(app)
-      .get(`/api/articles/${articleId}/comments`)
+      .get(`/api/articles/1/comments`)
       .expect(200)
       .then((response) => {
-        expect(response.body.article).toEqual(
+        expect(response.body.comments).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
               comment_id: expect.any(Number),
@@ -214,38 +213,36 @@ describe("GET /api/articles/:articleid/comments", () => {
               created_at: expect.any(String),
               author: expect.any(String),
               body: expect.any(String),
-              article_id: articleId,
+              article_id: 1,
             }),
           ])
         );
       });
   });
   test("should return an array of objects, sorted by created_at date by default where the most recent is on top ", () => {
-    const articleId = 1;
     return request(app)
-      .get(`/api/articles/${articleId}/comments`)
+      .get(`/api/articles/1/comments`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toBeSorted({
+        expect(body.comments).toBeSorted({
           key: "created_at",
           descending: true,
         });
       });
   });
 
-  test("should return  400 badRequest if provided id is invalid", () => {
-    const articleId = "invalid";
+  test("should return  400 Not Found if provided id is invalid", () => {
     return request(app)
-      .get(`/api/articles/${articleId}/comments`)
+      .get(`/api/articles/notanumber/comments`)
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("Bad Request: ID provided is not valid");
       });
   });
   test("should return  404 badRequest if provided id is non existent", () => {
-    const articleId = 9999;
+
     return request(app)
-      .get(`/api/articles/${articleId}/comments`)
+      .get(`/api/articles/9999/comments`)
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe(
@@ -253,6 +250,17 @@ describe("GET /api/articles/:articleid/comments", () => {
         );
       });
   });
+  test("should return enpty array if the id provided  does not havea any comments", () => {
+    return request(app)
+      .get(`/api/articles/2/comments`)
+      .expect(200)
+      .then((response) => {
+        expect(response.body.comments).toEqual(
+          []
+        );
+      });
+  });
+
 });
 
 describe("POST /api/articles/:articleid/comments", () => {
@@ -285,7 +293,7 @@ describe("POST /api/articles/:articleid/comments", () => {
         .get(`/api/articles/${articleId}/comments`)
         .expect(200)
         .then(({body})=>{
-          return expect(body.article.length).toEqual(count);
+          return expect(body.comments.length).toEqual(count);
         })
 
       });
@@ -317,13 +325,12 @@ describe("POST /api/articles/:articleid/comments", () => {
   });
 
   test("should return  400 badRequest if provided article id is invalid", () => {
-    const articleId = "invalid";
     const payload = {
       username: "lurker",
       body: "this is a comment",
     };
     return request(app)
-      .post(`/api/articles/${articleId}/comments`)
+      .post(`/api/articles/notANumber/comments`)
       .send(payload)
       .expect(400)
       .then((response) => {
@@ -337,7 +344,7 @@ describe("POST /api/articles/:articleid/comments", () => {
       body: "this is a comment",
     };
     return request(app)
-      .post(`/api/articles/${articleId}/comments`)
+      .post(`/api/articles/9999/comments`)
       .send(payload)
       .expect(404)
       .then((response) => {
@@ -369,7 +376,7 @@ describe("POST /api/articles/:articleid/comments", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe(
-          "Bad Request: ID provided has not been found."
+          "Bad Request: Parameter(s) provided has not been found."
         );
       });
   });
