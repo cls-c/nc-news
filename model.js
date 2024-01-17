@@ -14,19 +14,11 @@ exports.fetchApiInformation = () => {
 };
 
 exports.fetchArticleWithCorrectId = (articleId) => {
-  articleId = Number(articleId);
-  if (Number.isInteger(articleId) === false) {
-    return Promise.reject({ msg: "invalid input" });
-  }
   const query = format(
     `SELECT * FROM articles WHERE article_id = ${articleId};`
   );
   return db.query(query).then((data) => {
-    if (data.rows.length === 0) {
-      return Promise.reject({ msg: "Non-existent id" });
-    } else {
-      return data.rows;
-    }
+    return data.rows;
   });
 };
 exports.fetchArticles = (sortingKey) => {
@@ -62,43 +54,24 @@ exports.fetchArticles = (sortingKey) => {
 
 exports.fetchArticleComment = async (articleId) => {
   articleId = Number(articleId);
-  const allArticle = await this.fetchArticles();
-  const validArticldId= allArticle.map((({article_id})=>{return article_id}));
 
-  if (Number.isInteger(articleId) === false) {
-    return Promise.reject({ msg: "invalid input" });
-  }
-  if(!(validArticldId.includes(articleId))) {
-    return Promise.reject({ msg: "Non-existent id" })
-  }
   const query = `SELECT comment_id, votes, created_at, author,body,article_id FROM comments WHERE article_id = ${articleId} ORDER BY created_at DESC`;
   return db.query(query).then((data) => {
-    // if (data.rows.length === 0) {
-    //   return Promise.reject({ msg: "Non-existent id" });
-    // } else {
-      return data.rows;
-    // }
+    return data.rows;
   });
 };
 
 exports.addNewComment = async (articleId, username, commentBody, users) => {
   articleId = Number(articleId);
 
-  const allArticle = await this.fetchArticles();
-  const validArticldId= allArticle.map((({article_id})=>{return article_id}));
   const allValidUsername = users.map(({ username }) => {
     return username;
   });
 
-  if (
-    Number.isInteger(articleId) === false ||
-    typeof username !== "string" ||
-    typeof commentBody !== "string"
-  ) {
+  if (typeof username !== "string" || typeof commentBody !== "string") {
     return Promise.reject({ msg: "invalid input" });
-  } else if  (!(validArticldId.includes(articleId))) {
-    return Promise.reject({ msg: "Non-existent id" })
-  } 
+  }
+
   const inputData = [[articleId, username, commentBody]];
 
   const query = format(
@@ -117,4 +90,43 @@ exports.fetchAllUsers = () => {
   });
 };
 
-// INSERT INTO comments (article_id,author,body) VALUES (1,'lurker','this is a comment') RETURNING *
+exports.updateArticleObj = async () => {
+  articleId = Number(articleId);
+
+  const query = "";
+  return db.query(query).then((data) => {
+    return data.rows;
+  });
+};
+
+exports.validateArticleId = async (articleId) => {
+  articleId = Number(articleId);
+  const allArticle = await this.fetchArticles();
+  const validArticldId = allArticle.map(({ article_id }) => {
+    return article_id;
+  });
+  if (Number.isInteger(articleId) === false) {
+    return Promise.reject({ msg: "invalid input" });
+  } else if (!validArticldId.includes(articleId)) {
+    return Promise.reject({ msg: "Non-existent id" });
+  } else {
+    return articleId;
+  }
+};
+
+exports.updateArticleVote = (articleId, newVote) => {
+  newVote = Number(newVote);
+  const inputData = [[newVote, articleId]];
+  console.log(inputData);
+  if (!Number.isInteger(newVote)) {
+    return Promise.reject({ msg: "invalid input" });
+  } else {
+    const query = format(
+      "UPDATE articles SET votes = votes + %L WHERE article_id = %L RETURNING *",
+      newVote,articleId
+    );
+    return db.query(query).then((data)=>{
+      return data.rows;
+    })
+  }
+};

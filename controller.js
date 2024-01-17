@@ -6,6 +6,8 @@ const {
   fetchArticleComment,
   addNewComment,
   fetchAllUsers,
+  validateArticleId,
+  updateArticleVote,
 } = require("./model");
 
 exports.getTopics = async (req, res) => {
@@ -35,7 +37,8 @@ exports.getApiInfo = async (req, res) => {
 exports.getArticleWithID = async (req, res, next) => {
   try {
     const { articleId } = req.params;
-    const article = await fetchArticleWithCorrectId(articleId);
+    const validatedId = await validateArticleId(articleId);
+    const article = await fetchArticleWithCorrectId(validatedId);
     res.status("200").send({ article });
   } catch (err) {
     return next(err);
@@ -55,21 +58,46 @@ exports.getAllArticles = async (req, res, next) => {
 exports.getArticleComments = async (req, res, next) => {
   try {
     const { articleId } = req.params;
-    const associatedComments = await fetchArticleComment(articleId);
+    const validatedId = await validateArticleId(articleId);
+    const associatedComments = await fetchArticleComment(validatedId);
     res.status("200").send({ comments: associatedComments });
   } catch (err) {
     return next(err);
   }
 };
 
-exports.updateArticleComment = async (req, res, next) => {
+exports.addArticleComment = async (req, res, next) => {
   try {
     const { articleId } = req.params;
     const { username, body } = req.body;
     const allUsers = await fetchAllUsers();
-    const newComment = await addNewComment(articleId, username, body, allUsers);
+    const validatedId = await validateArticleId(articleId);
+    const newComment = await addNewComment(
+      validatedId,
+      username,
+      body,
+      allUsers
+    );
     res.status("200").send({ newComment });
   } catch (err) {
     return next(err);
   }
 };
+
+exports.updateArticle = async (req, res, next) => {
+  try {
+    const { articleId } = req.params;
+    const { inc_votes } = req.body;
+    console.log(articleId, inc_votes);
+    const validatedArticleId = await validateArticleId(articleId);
+    const modifiedArticle = await updateArticleVote(
+      validatedArticleId,
+      inc_votes
+    );
+    console.log(modifiedArticle);
+    res.status("200").send({article: modifiedArticle});
+  } catch (err) {
+    console.log(err)
+    return next(err)
+}
+}

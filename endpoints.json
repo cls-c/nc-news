@@ -66,7 +66,7 @@
     "payload":{"username":"string. username of the comment author", "body":"string, body content for the comment"},
     "queries": [],
     "exampleResponse": {
-      "articles": [
+      "comment": [
         {
           "comment_id": 23,
           "votes": 0,
@@ -74,6 +74,25 @@
           "author": "weegembump",
           "body": "Text from the article..",
           "article_id": "2"
+        }
+      ]
+    }
+  },
+  "PATCH /api/articles/:articleid": {
+    "description": "update and returned updated article specified by its articleid",
+    "payload":{ "inc_votes" : 15 },
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "article_id": "2",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 15,
+          "image_img_url": "wwww.example.image.com"
         }
       ]
     }

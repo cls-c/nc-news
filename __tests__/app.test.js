@@ -381,3 +381,90 @@ describe("POST /api/articles/:articleid/comments", () => {
       });
   });
 });
+
+
+describe("PATCH /api/articles/:articleid", () => {
+  test("should return 200", () => {
+    const payload = { inc_votes : 1 };
+    return request(app).patch("/api/articles/1")
+      .send(payload)
+      .expect(200);
+  });
+  test("should update annd retun the  article specified with the article with the correct vote if all input ar valid, and new vote is a positive number.", () => {
+    const articleId = 1;
+    const payload = { inc_votes : 1 };
+    return request(app).patch("/api/articles/1")
+      .send(payload)
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: articleId,
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String)
+            }),
+          ])
+        );
+      });
+  });
+  test("should update annd retun the  article specified with the correct vote if all new votes is negative.", () => {
+    const articleId = 1;
+    const payload = { inc_votes : -100 };
+    return request(app).patch("/api/articles/1")
+      .send(payload)
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: articleId,
+              topic: expect.any(String),
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String)
+            }),
+          ])
+        );
+      });
+  });
+
+  test("should return  400 badRequest if provided article id is invalid", () => {
+    const payload = { inc_votes : 1 };
+    return request(app).patch("/api/articles/invalid")
+      .send(payload)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad Request: ID provided is not valid");
+      });
+  });
+  test("should return  404 badRequest if provided article id is non existent", () => {
+    const articleId = 9999;
+    const payload = { inc_votes : 1 };
+    return request(app).patch("/api/articles/9999")
+      .send(payload)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe(
+          "Bad Request: ID provided has not been found."
+        );
+      });
+  });
+  test("should return  400 badRequest if provided payloadis invalid", () => {
+    const payload = { inc_votes : 'notanumber'};
+    return request(app).patch("/api/articles/1")
+      .send(payload)
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad Request: ID provided is not valid");
+      });
+  });
+});
+
+
