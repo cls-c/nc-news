@@ -60,6 +60,23 @@
         }
       ]
     }
+  },
+  "POST /api/articles/:articleid/comments": {
+    "description": "update comments associated to the article array specified by its articleid",
+    "payload":{"username":"string. username of the comment author", "body":"string, body content for the comment"},
+    "queries": [],
+    "exampleResponse": {
+      "articles": [
+        {
+          "comment_id": 23,
+          "votes": 0,
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "article_id": "2"
+        }
+      ]
+    }
   }
   
 }
