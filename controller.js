@@ -4,6 +4,8 @@ const {
   fetchArticleWithCorrectId,
   fetchArticles,
   fetchArticleComment,
+  addNewComment,
+  fetchAllUsers,
 } = require("./model");
 
 exports.getTopics = async (req, res) => {
@@ -59,3 +61,16 @@ exports.getArticleComments = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.updateArticleComment = async (req, res, next) => {
+  try {
+    const { articleId } = req.params;
+    const { username, body } = req.body;
+    const allUsers = await fetchAllUsers()
+    const newComment = await addNewComment(articleId,username,body,allUsers);
+    res.status("200").send({newComment});
+  } catch (err) {
+    return next(err);
+  }
+};
+

@@ -63,7 +63,6 @@ exports.fetchArticles = (sortingKey) => {
 exports.fetchArticleComment = (articleId) => {
   articleId = Number(articleId);
   if (Number.isInteger(articleId) === false) {
-    console.log(articleId, "rejection");
     return Promise.reject({ msg: "invalid input" });
   }
   const query = `SELECT comment_id, votes, created_at, author,body,article_id FROM comments WHERE article_id = ${articleId} ORDER BY created_at DESC`;
@@ -73,5 +72,30 @@ exports.fetchArticleComment = (articleId) => {
     } else {
       return data.rows;
     }
-  });
+  })
 };
+
+exports.addNewComment = async (articleId,username,commentBody,users) => {
+  articleId = Number(articleId);
+  const allValidUsername = users.map(({username})=> {return username})
+
+  if (Number.isInteger(articleId) === false ||typeof username !== 'string' ||typeof commentBody !== 'string' 
+  ) {
+    return Promise.reject({ msg: "invalid input" });
+  }
+  const inputData = [[articleId,username,commentBody]]
+
+  const query = format('INSERT INTO comments (article_id,author,body) VALUES %L RETURNING *',inputData)
+  return db.query(query).then((data)=> {
+    return data.rows;
+  }) 
+}
+
+exports.fetchAllUsers = () => {
+  const query = 'SELECT * FROM users'
+  return db.query(query).then((data)=> {
+    return data.rows;
+  })
+}
+
+// INSERT INTO comments (article_id,author,body) VALUES (1,'lurker','this is a comment') RETURNING *
