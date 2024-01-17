@@ -97,7 +97,6 @@ exports.updateArticle = async (req, res, next) => {
     console.log(modifiedArticle);
     res.status("200").send({article: modifiedArticle});
   } catch (err) {
-    console.log(err)
     return next(err)
 }
 }

@@ -23,9 +23,7 @@ app.patch("/api/articles/:articleId",updateArticle)
 app.all("*", invalidPath);
 
 app.use((err, req, res, next) => {
-    console.log(err,'err')
   if (err.msg === "invalid input") {
-    console.log('caught err')
     res.status(400).send({ msg: "Bad Request: ID provided is not valid" });
   } else {
     next(err);
