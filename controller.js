@@ -8,6 +8,8 @@ const {
   fetchAllUsers,
   validateArticleId,
   updateArticleVote,
+  validateCommentId,
+  deleteCommentModel,
 } = require("./model");
 
 exports.getTopics = async (req, res) => {
@@ -93,8 +95,19 @@ exports.updateArticle = async (req, res, next) => {
       validatedArticleId,
       inc_votes
     );
-    res.status("200").send({article: modifiedArticle});
+    res.status("200").send({ article: modifiedArticle });
   } catch (err) {
-    return next(err)
-}
-}
+    return next(err);
+  }
+};
+
+exports.deleteComment = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    const validatedCommentId = await validateCommentId(comment_id);
+    const deleteComment = await deleteCommentModel(validatedCommentId);
+    res.sendStatus("204");
+  } catch (err) {
+    return next(err);
+  }
+};

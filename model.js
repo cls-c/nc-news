@@ -129,3 +129,32 @@ exports.updateArticleVote = (articleId, newVote) => {
     })
   }
 };
+
+exports.fetchComments = () => {
+  const query = 'SELECT * FROM comments;'
+  return db.query(query).then((data)=> {
+    return data.rows
+  })
+}
+
+exports.validateCommentId = async (commentId) => {
+  commentId = Number(commentId);
+  const allComments = await this.fetchComments();
+  const validCommentsId = allComments.map(({ comment_id }) => {
+    return comment_id;
+  });
+  if (Number.isInteger(commentId) === false) {
+    return Promise.reject({ msg: "invalid input" });
+  } else if (!validCommentsId.includes(commentId)) {
+    return Promise.reject({ msg: "Non-existent id" });
+  } else {
+    return commentId;
+  }
+}
+
+exports.deleteCommentModel = (commentId) => {
+  const query = format(`DELETE FROM comments WHERE comment_id = %L`,commentId)
+  return db.query(query).then((data)=> {
+    return data.rows
+  })
+}

@@ -240,7 +240,6 @@ describe("GET /api/articles/:articleid/comments", () => {
       });
   });
   test("should return  404 badRequest if provided id is non existent", () => {
-
     return request(app)
       .get(`/api/articles/9999/comments`)
       .expect(404)
@@ -255,12 +254,9 @@ describe("GET /api/articles/:articleid/comments", () => {
       .get(`/api/articles/2/comments`)
       .expect(200)
       .then((response) => {
-        expect(response.body.comments).toEqual(
-          []
-        );
+        expect(response.body.comments).toEqual([]);
       });
   });
-
 });
 
 describe("POST /api/articles/:articleid/comments", () => {
@@ -269,7 +265,8 @@ describe("POST /api/articles/:articleid/comments", () => {
       username: "lurker",
       body: "this is a comment",
     };
-    return request(app).post("/api/articles/1/comments")
+    return request(app)
+      .post("/api/articles/1/comments")
       .send(payload)
       .expect(200);
   });
@@ -290,12 +287,11 @@ describe("POST /api/articles/:articleid/comments", () => {
       .send(payload)
       .then(({ body }) => {
         return request(app)
-        .get(`/api/articles/${articleId}/comments`)
-        .expect(200)
-        .then(({body})=>{
-          return expect(body.comments.length).toEqual(count);
-        })
-
+          .get(`/api/articles/${articleId}/comments`)
+          .expect(200)
+          .then(({ body }) => {
+            return expect(body.comments.length).toEqual(count);
+          });
       });
   });
   test("should return an array of object for the newest comment inserted associated with the article, with the following keys: title, article_idtopic, author,created_at,votes,image_img_url,comment_count  ", () => {
@@ -382,18 +378,16 @@ describe("POST /api/articles/:articleid/comments", () => {
   });
 });
 
-
 describe("PATCH /api/articles/:articleid", () => {
   test("should return 200", () => {
-    const payload = { inc_votes : 1 };
-    return request(app).patch("/api/articles/1")
-      .send(payload)
-      .expect(200);
+    const payload = { inc_votes: 1 };
+    return request(app).patch("/api/articles/1").send(payload).expect(200);
   });
   test("should update annd retun the  article specified with the article with the correct vote if all input ar valid, and new vote is a positive number.", () => {
     const articleId = 1;
-    const payload = { inc_votes : 1 };
-    return request(app).patch("/api/articles/1")
+    const payload = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/1")
       .send(payload)
       .expect(200)
       .then((response) => {
@@ -406,7 +400,7 @@ describe("PATCH /api/articles/:articleid", () => {
               topic: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
-              article_img_url: expect.any(String)
+              article_img_url: expect.any(String),
             }),
           ])
         );
@@ -414,8 +408,9 @@ describe("PATCH /api/articles/:articleid", () => {
   });
   test("should update annd retun the  article specified with the correct vote if all new votes is negative.", () => {
     const articleId = 1;
-    const payload = { inc_votes : -100 };
-    return request(app).patch("/api/articles/1")
+    const payload = { inc_votes: -100 };
+    return request(app)
+      .patch("/api/articles/1")
       .send(payload)
       .expect(200)
       .then((response) => {
@@ -428,7 +423,7 @@ describe("PATCH /api/articles/:articleid", () => {
               topic: expect.any(String),
               created_at: expect.any(String),
               votes: expect.any(Number),
-              article_img_url: expect.any(String)
+              article_img_url: expect.any(String),
             }),
           ])
         );
@@ -436,8 +431,9 @@ describe("PATCH /api/articles/:articleid", () => {
   });
 
   test("should return  400 badRequest if provided article id is invalid", () => {
-    const payload = { inc_votes : 1 };
-    return request(app).patch("/api/articles/invalid")
+    const payload = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/invalid")
       .send(payload)
       .expect(400)
       .then((response) => {
@@ -446,8 +442,9 @@ describe("PATCH /api/articles/:articleid", () => {
   });
   test("should return  404 badRequest if provided article id is non existent", () => {
     const articleId = 9999;
-    const payload = { inc_votes : 1 };
-    return request(app).patch("/api/articles/9999")
+    const payload = { inc_votes: 1 };
+    return request(app)
+      .patch("/api/articles/9999")
       .send(payload)
       .expect(404)
       .then((response) => {
@@ -457,8 +454,9 @@ describe("PATCH /api/articles/:articleid", () => {
       });
   });
   test("should return  400 badRequest if provided payloadis invalid", () => {
-    const payload = { inc_votes : 'notanumber'};
-    return request(app).patch("/api/articles/1")
+    const payload = { inc_votes: "notanumber" };
+    return request(app)
+      .patch("/api/articles/1")
       .send(payload)
       .expect(400)
       .then((response) => {
@@ -467,4 +465,50 @@ describe("PATCH /api/articles/:articleid", () => {
   });
 });
 
+describe("DELETE api/comments/:comment_id", () => {
+  test("should return 200", () => {
+    return request(app).delete("/api/comments/1")
+      .expect(204)
+  });
+  test("should delete the comment of the associated comment id", () => {
+    const articleId = 9;
+    const count = commentData.reduce((counter, obj) => {
+      if (obj.article_id === articleId) counter += 1;
+      return counter;
+    }, 0);
+    return request(app).delete("/api/comments/1")
+      .expect(204)
+      .then(() => {
+        return request(app)
+          .get(`/api/articles/${articleId}/comments`)
+          .expect(200)
+          .then(({ body }) => {
+            expect(body.comments.length).toEqual(count-1);
+          });
+      });
+  });
+  test("should return an empty object  ", () => {
+    return request(app).delete("/api/comments/1")
+      .expect(204)
+      .then((response) => {
+        expect(response.body).toEqual({});
+      });
+  });
 
+  test("should return  400 Not Found if provided id is invalid", () => {
+    return request(app).delete("/api/comments/notanumber")
+      .expect(400)
+      .then((response) => {
+        expect(response.body.msg).toBe("Bad Request: ID provided is not valid");
+      });
+  });
+  test("should return  404 badRequest if provided id is non existent", () => {
+    return request(app).delete("/api/comments/9999")
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe(
+          "Bad Request: ID provided has not been found."
+        );
+      });
+  });
+});

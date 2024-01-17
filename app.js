@@ -8,6 +8,7 @@ const {
   getArticleComments,
   addArticleComment,
   updateArticle,
+  deleteComment,
 } = require("./controller");
 const app = express();
 app.use(express.json());
@@ -19,6 +20,7 @@ app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:articleId/comments", getArticleComments);
 app.post("/api/articles/:articleId/comments", addArticleComment);
 app.patch("/api/articles/:articleId",updateArticle)
+app.delete("/api/comments/:comment_id",deleteComment)
 
 app.all("*", invalidPath);
 
