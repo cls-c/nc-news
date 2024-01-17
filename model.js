@@ -84,7 +84,7 @@ exports.addNewComment = async (articleId, username, commentBody, users) => {
 };
 
 exports.fetchAllUsers = () => {
-  const query = "SELECT * FROM users";
+  const query = "SELECT username,name,avatar_url FROM users";
   return db.query(query).then((data) => {
     return data.rows;
   });

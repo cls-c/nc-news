@@ -111,3 +111,13 @@ exports.deleteComment = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.getAllUsers = async (req,res,next) => {
+  try{ 
+    const allAvailableUsers = await fetchAllUsers(); 
+    res.status("200").send({users: allAvailableUsers})
+
+  } catch (err) {
+    return next(err);
+  }
+}
