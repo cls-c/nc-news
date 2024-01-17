@@ -512,3 +512,35 @@ describe("DELETE api/comments/:comment_id", () => {
       });
   });
 });
+
+
+describe("GET /api/users", () => {
+  test("should return 200", () => {
+    return request(app).get("/api/users").expect(200);
+  });
+  test("should return an array of objects with all userss in the database. ", () => {
+    const numOfUser = userData.length;
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.users.length).toEqual(numOfUser);
+      });
+  });
+  test("should return an array of objects, each with the following keys: username, name, avatar_url ", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.users).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              username: expect.any(String),
+              name: expect.any(String),
+              avatar_url: expect.any(String),
+            }),
+          ])
+        );
+      });
+  });
+})
