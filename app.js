@@ -6,7 +6,8 @@ const {
   getArticleWithID,
   getAllArticles,
   getArticleComments,
-  updateArticleComment,
+  addArticleComment,
+  updateArticle,
 } = require("./controller");
 const app = express();
 app.use(express.json());
@@ -16,7 +17,8 @@ app.get("/api", getApiInfo);
 app.get("/api/articles/:articleId", getArticleWithID);
 app.get("/api/articles", getAllArticles);
 app.get("/api/articles/:articleId/comments", getArticleComments);
-app.post("/api/articles/:articleId/comments", updateArticleComment);
+app.post("/api/articles/:articleId/comments", addArticleComment);
+app.patch("/api/articles/:articleId",updateArticle)
 
 app.all("*", invalidPath);
 
