@@ -88,13 +88,11 @@ exports.updateArticle = async (req, res, next) => {
   try {
     const { articleId } = req.params;
     const { inc_votes } = req.body;
-    console.log(articleId, inc_votes);
     const validatedArticleId = await validateArticleId(articleId);
     const modifiedArticle = await updateArticleVote(
       validatedArticleId,
       inc_votes
     );
-    console.log(modifiedArticle);
     res.status("200").send({article: modifiedArticle});
   } catch (err) {
     return next(err)

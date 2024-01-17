@@ -117,7 +117,6 @@ exports.validateArticleId = async (articleId) => {
 exports.updateArticleVote = (articleId, newVote) => {
   newVote = Number(newVote);
   const inputData = [[newVote, articleId]];
-  console.log(inputData);
   if (!Number.isInteger(newVote)) {
     return Promise.reject({ msg: "invalid input" });
   } else {
