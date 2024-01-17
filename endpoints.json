@@ -83,7 +83,7 @@
     "payload":{ "inc_votes" : 15 },
     "queries": [],
     "exampleResponse": {
-      "articles": [
+      "article": [
         {
           "title": "Seafood substitutions are increasing",
           "article_id": "2",
@@ -96,7 +96,14 @@
         }
       ]
     }
+  },
+  "DELETE /api/comments/:comment_id": {
+    "description": "delete comments associated to the commentid",
+    "queries": [],
+    "exampleResponse": {
+    }
   }
   
 }
 
+///api/comments/:comment_id
