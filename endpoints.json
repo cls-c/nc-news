@@ -103,5 +103,17 @@
     "description": "delete comments associated to the commentid",
     "queries": [],
     "exampleResponse": {}
+  },
+  "GET /api/users": {
+    "description": "return an array object containing all registered users in the users table",
+    "queries": [],
+    "exampleResponse": {
+      "users":         {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
+
+    }
   }
 }
