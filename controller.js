@@ -50,7 +50,7 @@ exports.getArticleWithID = async (req, res, next) => {
 exports.getAllArticles = async (req, res, next) => {
   try {
     const { topic, sort_by } = req.query;
-    const allArticles = await fetchArticles(sort_by,topic);
+    const allArticles = await fetchArticles(sort_by, topic);
     res.status("200").send({ article: allArticles });
   } catch (err) {
     return next(err);
@@ -72,14 +72,9 @@ exports.addArticleComment = async (req, res, next) => {
   try {
     const { articleId } = req.params;
     const { username, body } = req.body;
-    const newComment = await addNewComment(
-      articleId,
-      username,
-      body
-    );
+    const newComment = await addNewComment(articleId, username, body);
     res.status("201").send({ newComment });
   } catch (err) {
-    console.log(err)
     return next(err);
   }
 };
@@ -110,12 +105,11 @@ exports.deleteComment = async (req, res, next) => {
   }
 };
 
-exports.getAllUsers = async (req,res,next) => {
-  try{ 
-    const allAvailableUsers = await fetchAllUsers(); 
-    res.status("200").send({users: allAvailableUsers})
-
+exports.getAllUsers = async (req, res, next) => {
+  try {
+    const allAvailableUsers = await fetchAllUsers();
+    res.status("200").send({ users: allAvailableUsers });
   } catch (err) {
     return next(err);
   }
-}
+};
