@@ -399,7 +399,7 @@ describe("PATCH /api/articles/:articleid", () => {
               article_id: articleId,
               topic: expect.any(String),
               created_at: expect.any(String),
-              votes: expect.any(Number),
+              votes: 101,
               article_img_url: expect.any(String),
             }),
           ])
@@ -422,7 +422,7 @@ describe("PATCH /api/articles/:articleid", () => {
               article_id: articleId,
               topic: expect.any(String),
               created_at: expect.any(String),
-              votes: expect.any(Number),
+              votes: 0,
               article_img_url: expect.any(String),
             }),
           ])
