@@ -544,3 +544,40 @@ describe("GET /api/users", () => {
       });
   });
 })
+
+describe("GET /api/articles ADDITIONAL FEATURE - Filer by topic", () => {
+  test("should return 200", () => {
+    return request(app).get("/api/articles").expect(200);
+  });
+  test("should return an array of objects, each with the following keys: title, article_idtopic, author,created_at,votes,image_img_url,comment_count  ", () => {
+    return request(app)
+      .get("/api/articles?topic=mitch")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              author: expect.any(String),
+              title: expect.any(String),
+              article_id: expect.any(Number),
+              topic: "mitch",
+              created_at: expect.any(String),
+              votes: expect.any(Number),
+              article_img_url: expect.any(String),
+              comment_count: expect.any(String),
+            }),
+          ])
+        );
+      });
+  });
+  test("should return 404 Bad Request if topic parameter is non-existent", () => {
+    return request(app)
+      .get(`/api/articles?topic=hello`)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe(
+          "Bad Request: ID provided has not been found."
+        );
+      });
+  });
+});

@@ -21,31 +21,38 @@ exports.fetchArticleWithCorrectId = (articleId) => {
     return data.rows;
   });
 };
-exports.fetchArticles = (sortingKey) => {
-  let sortBy = "articles.created_at";
-  const acceptedKey = {
-    author: "articles",
-    title: "articles",
-    article_id: "articles",
-    topic: "articles",
-    votes: "articles",
-    count_comment: "t2",
-  };
-  let key;
-  const validInput = Object.keys(acceptedKey);
+exports.fetchArticles = (sortingKey, topic) => {
+  let sortBy = "created_at";
+  let topicQuery = "";
+  const acceptedTopic = ['mitch', "cats", "paper"];
+  if (topic !== undefined) {
+
+      if (acceptedTopic.includes(topic)) {
+        topicQuery = format("WHERE topic = %L", topic);
+      } else {
+      return Promise.reject({ msg: "Non-existent id", status: 404 });
+    }
+  }
+
+
+  const acceptedSortByKey = [
+    "author",
+    "title",
+    "article_id",
+    "topic",
+    "votes",
+    "comment_count",
+  ];
+
   if (sortingKey != undefined) {
-    if (validInput.includes(sortingKey) === false) {
+    if (acceptedSortByKey.includes(sortingKey) === false) {
       return Promise.reject({ msg: "invalid Sort_by", status: 404 });
     }
-
-    sortBy = `${
-      Object.entries(acceptedKey).find((element) => {
-        return element[0] === sortingKey;
-      })[1]
-    }.${sortingKey}`;
+    sortBy = sortingKey;
   }
+
   const query = format(
-    `SELECT articles.author,articles.title,articles.article_id,articles.topic,articles.created_at,articles.votes,articles.article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id ORDER BY ${sortBy} DESC;`
+    `SELECT articles.author AS author,articles.title AS title,articles.article_id AS article_id,articles.topic AS topic,articles.created_at AS created_at,articles.votes AS votes,articles.article_img_url AS article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id ${topicQuery} ORDER BY ${sortBy} DESC;`
   );
   return db.query(query).then((data) => {
     return data.rows;
@@ -122,20 +129,21 @@ exports.updateArticleVote = (articleId, newVote) => {
   } else {
     const query = format(
       "UPDATE articles SET votes = votes + %L WHERE article_id = %L RETURNING *",
-      newVote,articleId
+      newVote,
+      articleId
     );
-    return db.query(query).then((data)=>{
+    return db.query(query).then((data) => {
       return data.rows;
-    })
+    });
   }
 };
 
 exports.fetchComments = () => {
-  const query = 'SELECT * FROM comments;'
-  return db.query(query).then((data)=> {
-    return data.rows
-  })
-}
+  const query = "SELECT * FROM comments;";
+  return db.query(query).then((data) => {
+    return data.rows;
+  });
+};
 
 exports.validateCommentId = async (commentId) => {
   commentId = Number(commentId);
@@ -150,11 +158,11 @@ exports.validateCommentId = async (commentId) => {
   } else {
     return commentId;
   }
-}
+};
 
 exports.deleteCommentModel = (commentId) => {
-  const query = format(`DELETE FROM comments WHERE comment_id = %L`,commentId)
-  return db.query(query).then((data)=> {
-    return data.rows
-  })
-}
+  const query = format(`DELETE FROM comments WHERE comment_id = %L`, commentId);
+  return db.query(query).then((data) => {
+    return data.rows;
+  });
+};
