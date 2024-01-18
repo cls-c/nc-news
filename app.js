@@ -45,20 +45,31 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-  if (err.code === "42703") {
-    res
-      .status(404)
-      .send({ msg: "Bad Request: ID provided has not been found." });
-  } else {
-    next(err);
-  }
-});
+    if (err.code === "22P02") {
+      res
+        .status(400)
+        .send({ msg: "Bad Request: invalid type provided." });
+    } else {
+      next(err);
+    }
+  });
+
+  app.use((err, req, res, next) => {
+    if (err.code === "23502") {
+      res
+        .status(400)
+        .send({ msg: "Bad Request: missing payload value." });
+    } else {
+      next(err);
+    }
+  });
+
 
 app.use((err, req, res, next) => {
-  if (err.code === "23503") {
+  if (err.code === "42703" || err.code === "23503") {
     res
       .status(404)
-      .send({ msg: "Bad Request: Parameter(s) provided has not been found." });
+      .send({ msg: "Bad Request: Parameter(s) i.e. ID provided has not been found." });
   } else {
     next(err);
   }

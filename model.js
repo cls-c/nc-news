@@ -71,11 +71,11 @@ exports.fetchArticleComment = async (articleId) => {
 exports.addNewComment = async (articleId, username, commentBody, users) => {
   articleId = Number(articleId);
 
-  const allValidUsername = users.map(({ username }) => {
-    return username;
-  });
+  // const allValidUsername = users.map(({ username }) => {
+  //   return username;
+  // }); typeof username !== "string" || 
 
-  if (typeof username !== "string" || typeof commentBody !== "string") {
+  if (typeof commentBody !== "string") {
     return Promise.reject({ msg: "invalid input" });
   }
 

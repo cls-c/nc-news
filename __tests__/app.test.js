@@ -260,16 +260,6 @@ describe("GET /api/articles/:articleid/comments", () => {
 });
 
 describe("POST /api/articles/:articleid/comments", () => {
-  test("should return 200", () => {
-    const payload = {
-      username: "lurker",
-      body: "this is a comment",
-    };
-    return request(app)
-      .post("/api/articles/1/comments")
-      .send(payload)
-      .expect(200);
-  });
   test("should update the comments table with the newest comment if all input ar valid.", () => {
     const articleId = 1;
     const count =
@@ -283,7 +273,7 @@ describe("POST /api/articles/:articleid/comments", () => {
     };
     return request(app)
       .post(`/api/articles/${articleId}/comments`)
-      .expect(200)
+      .expect(201)
       .send(payload)
       .then(({ body }) => {
         return request(app)
@@ -303,7 +293,7 @@ describe("POST /api/articles/:articleid/comments", () => {
     return request(app)
       .post(`/api/articles/${articleId}/comments`)
       .send(payload)
-      .expect(200)
+      .expect(201)
       .then((response) => {
         expect(response.body.newComment).toEqual(
           expect.arrayContaining([
@@ -330,7 +320,7 @@ describe("POST /api/articles/:articleid/comments", () => {
       .send(payload)
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Bad Request: ID provided is not valid");
+        expect(response.body.msg).toBe("Bad Request: invalid type provided.");
       });
   });
   test("should return  404 badRequest if provided article id is non existent", () => {
@@ -345,7 +335,7 @@ describe("POST /api/articles/:articleid/comments", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe(
-          "Bad Request: ID provided has not been found."
+          "Bad Request: Parameter(s) i.e. ID provided has not been found."
         );
       });
   });
@@ -358,7 +348,7 @@ describe("POST /api/articles/:articleid/comments", () => {
       .send(payload)
       .expect(400)
       .then((response) => {
-        expect(response.body.msg).toBe("Bad Request: ID provided is not valid");
+        expect(response.body.msg).toBe("Bad Request: missing payload value.");
       });
   });
   test("should return 404 badRequest if provided username is non existent", () => {
@@ -372,7 +362,7 @@ describe("POST /api/articles/:articleid/comments", () => {
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe(
-          "Bad Request: Parameter(s) provided has not been found."
+          "Bad Request: Parameter(s) i.e. ID provided has not been found."
         );
       });
   });

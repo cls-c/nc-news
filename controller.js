@@ -73,15 +73,16 @@ exports.addArticleComment = async (req, res, next) => {
     const { articleId } = req.params;
     const { username, body } = req.body;
     const allUsers = await fetchAllUsers();
-    const validatedId = await validateArticleId(articleId);
+    // const validatedId = await validateArticleId(articleId);
     const newComment = await addNewComment(
-      validatedId,
+      articleId,
       username,
       body,
       allUsers
     );
-    res.status("200").send({ newComment });
+    res.status("201").send({ newComment });
   } catch (err) {
+    console.log(err)
     return next(err);
   }
 };
