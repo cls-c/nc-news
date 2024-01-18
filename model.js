@@ -71,10 +71,6 @@ exports.fetchArticleComment = async (articleId) => {
 exports.addNewComment = async (articleId, username, commentBody, users) => {
   articleId = Number(articleId);
 
-  // const allValidUsername = users.map(({ username }) => {
-  //   return username;
-  // }); typeof username !== "string" || 
-
   if (typeof commentBody !== "string") {
     return Promise.reject({ msg: "invalid input" });
   }
