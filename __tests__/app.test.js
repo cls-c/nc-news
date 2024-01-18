@@ -581,3 +581,31 @@ describe("GET /api/articles ADDITIONAL FEATURE - Filer by topic", () => {
       });
   });
 });
+
+describe("GET /api/articles/:articleid ADDITIONAL FEATURE - Filer by topic", () => {
+  test("should return 200", () => {
+    return request(app).get("/api/articles/1").expect(200);
+  });
+  test("should return an array of objects, each with the following keys: title, article_idtopic, author,created_at,votes,image_img_url,comment_count ", () => {
+    return request(app)
+      .get("/api/articles/1")
+      .expect(200)
+      .then((response) => {
+        expect(response.body.article).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              votes: expect.any(Number),
+              created_at: expect.any(String),
+              author: expect.any(String),
+              body: expect.any(String),
+              article_id: 1,
+              article_img_url: expect.any(String),
+              title: expect.any(String),
+              topic: expect.any(String),
+              comment_count: expect.any(String)
+            }),
+          ])
+        );
+      });
+  });
+})

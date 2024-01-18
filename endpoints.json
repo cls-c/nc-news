@@ -39,7 +39,7 @@
           "body": "Text from the article..",
           "created_at": "2018-05-30T15:59:13.341Z",
           "votes": 0,
-          "image_img_url": "wwww.example.image.com"
+          "article_img_url": "wwww.example.image.com"
         }
       ]
     }
