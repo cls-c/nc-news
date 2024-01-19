@@ -5,12 +5,16 @@ This is a project featuring a simplified database (db) for a social media/forum 
 Only a registered user (a user exist in the users table) can create a new comment. However anyone can add upvote or downvote the associated article or the comment associated.  
 This project includes an api that allow users to enquiry all existing users / articles / topics / comments and updates or delete the associated comments. 
 
+![nc_backendproject_datarelationship drawio](https://github.com/cls-c/nc-news/assets/24395930/0f56f24d-831b-4b30-8722-6ee08405ca81)
+This diagram illustrated the table field relationship. 
+
 ### Try it out yourself - Currently hosted on Render : https://clsc-nc-news.onrender.com/ {endpoint}
 Use /api endpoint to check all available endpoints, accepted query, payload format and example responses...etc
 
 
 ## To initiate this project
 You can clone the project and create a new repo in your personal repo. Then in your terminal, push your code to your own repository with the following command: 
+
 ```
 git remote set-url origin YOUR_NEW_REPO_URL_HERE
 git branch -M main
