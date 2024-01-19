@@ -9,7 +9,7 @@ This project includes an api that allow users to enquiry all existing users / ar
 This diagram illustrated the table field relationship. 
 
 ### Try it out yourself - Currently hosted on Render : https://clsc-nc-news.onrender.com/ {endpoint}
-Use /api endpoint to check all available endpoints, accepted query, payload format and example responses...etc
+Use /api endpoint i.e. https://clsc-nc-news.onrender.com/api to check all available endpoints, accepted query, payload format and example responses...etc
 
 
 ## To initiate this project
