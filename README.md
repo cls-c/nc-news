@@ -8,27 +8,22 @@ This project includes an api that allow users to enquiry all existing users / ar
 ![nc_backendproject_datarelationship drawio](https://github.com/cls-c/nc-news/assets/24395930/0f56f24d-831b-4b30-8722-6ee08405ca81)
 This diagram illustrated the table field relationship. 
 
-### Try it out yourself - Currently hosted on Render : https://clsc-nc-news.onrender.com/ {endpoint}
+### Try it out yourself - Currently hosted on Render : https://clsc-nc-news.onrender.com/api 
 Use /api endpoint to check all available endpoints, accepted query, payload format and example responses...etc
 
 
-## To initiate this project
-You can clone the project and create a new repo in your personal repo. Then in your terminal, push your code to your own repository with the following command: 
-
-```
-git remote set-url origin YOUR_NEW_REPO_URL_HERE
-git branch -M main
-git push -u origin main
-``` 
+## To initiate and test this project
+You can clone the project using ```git pull origin https://github.com/cls-c/nc-news.git```
 
 Use `npm install` to install all required packages. 
+Minimum app version: 
+postgres : ^8.7.3
+Node : v21.2.0 or above
 
 Create the developement & testing envinroment for database connection: create a .env.developement file, into each, add PGDATABASE=nc_news and PGDATABASE=nc_news_test respectively
 
-After you created the environment details, you can created the local db with `npm run setup-dbs` and seed the local database with  `npm run seed`
+After you created the environment details, you can create the local db with `npm run setup-dbs` and seed the local database with  `npm run seed`
 
 Currently existing tests are all written in jest and supertest. You can also run test with the pre-written script: `npm run test` 
 
 
-If you wish to host the project on yourself: 
-You can host the db with the free tier ElephantSQL and create your own production enviornment. 
