@@ -23,7 +23,7 @@ exports.fetchArticleWithCorrectId = (articleId) => {
     return data.rows;
   });
 };
-exports.fetchArticles = (sortingKey, topic,order) => {
+exports.fetchArticles = (sortingKey, topic, order) => {
   let sortBy = "created_at";
   let topicQuery = "";
   let sortingOrder = "DESC";
@@ -45,10 +45,7 @@ exports.fetchArticles = (sortingKey, topic,order) => {
     "comment_count",
   ];
 
-  const acceptedSortOrderKey = [
-    "ASC",
-    "DESC"
-  ]
+  const acceptedSortOrderKey = ["ASC", "DESC"];
 
   if (sortingKey != undefined) {
     if (acceptedSortByKey.includes(sortingKey) === false) {
@@ -59,7 +56,7 @@ exports.fetchArticles = (sortingKey, topic,order) => {
   if (order != undefined) {
     if (acceptedSortOrderKey.includes(order) === false) {
       return Promise.reject({ msg: "invalid Sort_by", status: 404 });
-    } 
+    }
     sortingOrder = order;
   }
 
@@ -139,7 +136,8 @@ exports.updateArticleVote = (articleId, newVote) => {
       "UPDATE articles SET votes = votes + %L WHERE article_id = %L RETURNING *",
       newVote,
       articleId
-    );200
+    );
+    200;
     return db.query(query).then((data) => {
       return data.rows;
     });
@@ -175,15 +173,23 @@ exports.deleteCommentModel = (commentId) => {
   });
 };
 
-
-exports.fetchUsername = (username,allUser) => {
-const allUserArray = allUser.map(({username}) => {return username})
-  if (!(allUserArray.includes(username))){
-    return Promise.reject({msg: "Non-existent username"})
+exports.fetchUsername = (username, allUser) => {
+  const allUserArray = allUser.map(({ username }) => {
+    return username;
+  });
+  if (!allUserArray.includes(username)) {
+    return Promise.reject({ msg: "Non-existent username" });
   }
-  
-  const query = format(`SELECT * FROM users WHERE username = %L`, username)
-  return db.query(query).then((data)=> { 
+
+  const query = format(`SELECT * FROM users WHERE username = %L`, username);
+  return db.query(query).then((data) => {
+    return data.rows;
+  });
+};
+
+exports.updateCommentVote = (comment_id,inc_votes) => {
+  const query = format('UPDATE comments SET votes = votes + %L WHERE comment_id = %L RETURNING *',inc_votes,comment_id)
+  return db.query(query).then((data)=> {
     return data.rows;
   })
 }

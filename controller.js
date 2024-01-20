@@ -11,6 +11,7 @@ const {
   validateCommentId,
   deleteCommentModel,
   fetchUsername,
+  updateCommentVote,
 } = require("./model");
 
 exports.getTopics = async (req, res) => {
@@ -50,8 +51,8 @@ exports.getArticleWithID = async (req, res, next) => {
 
 exports.getAllArticles = async (req, res, next) => {
   try {
-    const { topic, sort_by, order} = req.query;
-    const allArticles = await fetchArticles(sort_by, topic,order);
+    const { topic, sort_by, order } = req.query;
+    const allArticles = await fetchArticles(sort_by, topic, order);
     res.status("200").send({ article: allArticles });
   } catch (err) {
     return next(err);
@@ -115,13 +116,24 @@ exports.getAllUsers = async (req, res, next) => {
   }
 };
 
-exports.getUsername = async (req, res ,next) => {
-  try{ 
-    const {username} = req.params;
+exports.getUsername = async (req, res, next) => {
+  try {
+    const { username } = req.params;
     const allUser = await fetchAllUsers();
-    const findUsername = await fetchUsername(username,allUser);
-    res.status("200").send({user: findUsername})
+    const findUsername = await fetchUsername(username, allUser);
+    res.status("200").send({ user: findUsername });
   } catch (err) {
-    return next(err); 
+    return next(err);
   }
-}
+};
+
+exports.patchComment = async (req, res, next) => {
+  try {
+    const { comment_id } = req.params;
+    const { inc_votes } = req.body;
+    const updatedComment = await updateCommentVote(comment_id,inc_votes);
+    res.status("200").send({ updatedComment });
+  } catch (err) {
+    return next(err);
+  }
+};
