@@ -10,6 +10,7 @@ const {
   updateArticleVote,
   validateCommentId,
   deleteCommentModel,
+  fetchUsername,
 } = require("./model");
 
 exports.getTopics = async (req, res) => {
@@ -113,3 +114,14 @@ exports.getAllUsers = async (req, res, next) => {
     return next(err);
   }
 };
+
+exports.getUsername = async (req, res ,next) => {
+  try{ 
+    const {username} = req.params;
+    const allUser = await fetchAllUsers();
+    const findUsername = await fetchUsername(username,allUser);
+    res.status("200").send({user: findUsername})
+  } catch (err) {
+    return next(err); 
+  }
+}
