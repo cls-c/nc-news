@@ -8,8 +8,10 @@ This project includes an api that allow users to enquiry all existing users / ar
 ![nc_backendproject_datarelationship drawio](https://github.com/cls-c/nc-news/assets/24395930/0f56f24d-831b-4b30-8722-6ee08405ca81)
 This diagram illustrated the table field relationship. 
 
+
 ### Try it out yourself - Currently hosted on Render : https://clsc-nc-news.onrender.com/api 
 Use /api endpoint to check all available endpoints, accepted query, payload format and example responses...etc
+
 
 
 ## To initiate and test this project
