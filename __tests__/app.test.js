@@ -160,7 +160,7 @@ describe("GET /api/articles", () => {
         });
       });
   });
-  test("If specified a sortby optional parameter, will return object that is ordered by sorted by optional parameter, in asending order", () => {
+  test("If specified a sortby optional parameter, will return object that is ordered by sorted by optional parameter, in descending order", () => {
     const sortingKey = "author";
     return request(app)
       .get(`/api/articles?sort_by=${sortingKey}`)
@@ -456,29 +456,27 @@ describe("PATCH /api/articles/:articleid", () => {
 });
 
 describe("DELETE api/comments/:comment_id", () => {
-  test("should return 200", () => {
-    return request(app).delete("/api/comments/1")
-      .expect(204)
-  });
   test("should delete the comment of the associated comment id", () => {
     const articleId = 9;
     const count = commentData.reduce((counter, obj) => {
       if (obj.article_id === articleId) counter += 1;
       return counter;
     }, 0);
-    return request(app).delete("/api/comments/1")
+    return request(app)
+      .delete("/api/comments/1")
       .expect(204)
       .then(() => {
         return request(app)
           .get(`/api/articles/${articleId}/comments`)
           .expect(200)
           .then(({ body }) => {
-            expect(body.comments.length).toEqual(count-1);
+            expect(body.comments.length).toEqual(count - 1);
           });
       });
   });
   test("should return an empty object  ", () => {
-    return request(app).delete("/api/comments/1")
+    return request(app)
+      .delete("/api/comments/1")
       .expect(204)
       .then((response) => {
         expect(response.body).toEqual({});
@@ -486,14 +484,16 @@ describe("DELETE api/comments/:comment_id", () => {
   });
 
   test("should return  400 Not Found if provided id is invalid", () => {
-    return request(app).delete("/api/comments/notanumber")
+    return request(app)
+      .delete("/api/comments/notanumber")
       .expect(400)
       .then((response) => {
         expect(response.body.msg).toBe("Bad Request: ID provided is not valid");
       });
   });
   test("should return  404 badRequest if provided id is non existent", () => {
-    return request(app).delete("/api/comments/9999")
+    return request(app)
+      .delete("/api/comments/9999")
       .expect(404)
       .then((response) => {
         expect(response.body.msg).toBe(
@@ -502,7 +502,6 @@ describe("DELETE api/comments/:comment_id", () => {
       });
   });
 });
-
 
 describe("GET /api/users", () => {
   test("should return 200", () => {
@@ -533,12 +532,9 @@ describe("GET /api/users", () => {
         );
       });
   });
-})
+});
 
-describe("GET /api/articles ADDITIONAL FEATURE - Filer by topic", () => {
-  test("should return 200", () => {
-    return request(app).get("/api/articles").expect(200);
-  });
+describe("GET /api/articles ADDITIONAL FEATURE - adding commentCount", () => {
   test("should return an array of objects, each with the following keys: title, article_idtopic, author,created_at,votes,image_img_url,comment_count  ", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
@@ -592,10 +588,50 @@ describe("GET /api/articles/:articleid ADDITIONAL FEATURE - Filer by topic", () 
               article_img_url: expect.any(String),
               title: expect.any(String),
               topic: expect.any(String),
-              comment_count: expect.any(String)
+              comment_count: expect.any(String),
             }),
           ])
         );
       });
   });
-})
+});
+
+describe("GET /api/articles ADDITIONAL FEATURE - sorting by key and sort order", () => {
+  test("If not specified a sorting parameter i.e. (ascending or descending), will return object that is ordered by sorted by optional parameter, in descending order by default", () => {
+    const sortingKey = "title";
+    return request(app)
+      .get(`/api/articles?sort_by=${sortingKey}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toBeSorted({ key: sortingKey, descending: true });
+      });
+  })
+  test("If  specified a sorting parameter = ascending, will return object that is ordered by sorted by optional parameter, in asecnding order", () => {
+    const sortingKey = "author";
+    const order = "ASC"
+    return request(app)
+      .get(`/api/articles?sort_by=${sortingKey}&order=${order}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toBeSorted({ key: sortingKey});
+      });
+  })
+  test("If specified a sorting parameter = descending, will return object that is ordered by sorted by optional parameter, in descending order", () => {
+    const sortingKey = "author";
+    const order = "DESC"
+    return request(app)
+      .get(`/api/articles?sort_by=${sortingKey}&order=${order}`)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.article).toBeSorted({ key: sortingKey, descending: true });
+      });
+  })
+  test("If specified a sorting parameter = descending, will return object that is ordered by sorted by optional parameter, in descending order", () => {
+    const sortingKey = "author";
+    const order = "INVALID"
+    return request(app)
+      .get(`/api/articles?sort_by=${sortingKey}&order=${order}`)
+      .expect(404)
+      .then(({ body }) => {      });
+  })
+});

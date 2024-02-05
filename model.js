@@ -15,25 +15,26 @@ exports.fetchApiInformation = () => {
 
 exports.fetchArticleWithCorrectId = (articleId) => {
   const query = format(
-    'SELECT articles.author AS author,articles.title AS title,articles.article_id AS article_id,articles.topic AS topic,articles.created_at AS created_at,articles.votes AS votes,articles.body AS body, articles.article_img_url AS article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id WHERE articles.article_id = %L',articleId);
+    "SELECT articles.author AS author,articles.title AS title,articles.article_id AS article_id,articles.topic AS topic,articles.created_at AS created_at,articles.votes AS votes,articles.body AS body, articles.article_img_url AS article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id WHERE articles.article_id = %L",
+    articleId
+  );
 
   return db.query(query).then((data) => {
     return data.rows;
   });
 };
-exports.fetchArticles = (sortingKey, topic) => {
+exports.fetchArticles = (sortingKey, topic,order) => {
   let sortBy = "created_at";
   let topicQuery = "";
-  const acceptedTopic = ['mitch', "cats", "paper"];
+  let sortingOrder = "DESC";
+  const acceptedTopic = ["mitch", "cats", "paper"];
   if (topic !== undefined) {
-
-      if (acceptedTopic.includes(topic)) {
-        topicQuery = format("WHERE topic = %L", topic);
-      } else {
+    if (acceptedTopic.includes(topic)) {
+      topicQuery = format("WHERE topic = %L", topic);
+    } else {
       return Promise.reject({ msg: "Non-existent id", status: 404 });
     }
   }
-
 
   const acceptedSortByKey = [
     "author",
@@ -44,15 +45,26 @@ exports.fetchArticles = (sortingKey, topic) => {
     "comment_count",
   ];
 
+  const acceptedSortOrderKey = [
+    "ASC",
+    "DESC"
+  ]
+
   if (sortingKey != undefined) {
     if (acceptedSortByKey.includes(sortingKey) === false) {
       return Promise.reject({ msg: "invalid Sort_by", status: 404 });
     }
     sortBy = sortingKey;
   }
+  if (order != undefined) {
+    if (acceptedSortOrderKey.includes(order) === false) {
+      return Promise.reject({ msg: "invalid Sort_by", status: 404 });
+    } 
+    sortingOrder = order;
+  }
 
   const query = format(
-    `SELECT articles.author AS author,articles.title AS title,articles.article_id AS article_id,articles.topic AS topic,articles.created_at AS created_at,articles.votes AS votes,articles.article_img_url AS article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id ${topicQuery} ORDER BY ${sortBy} DESC;`
+    `SELECT articles.author AS author,articles.title AS title,articles.article_id AS article_id,articles.topic AS topic,articles.created_at AS created_at,articles.votes AS votes,articles.article_img_url AS article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id ${topicQuery} ORDER BY ${sortBy} ${sortingOrder};`
   );
   return db.query(query).then((data) => {
     return data.rows;
