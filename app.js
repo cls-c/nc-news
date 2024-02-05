@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require('cors');
 const {
   getTopics,
   invalidPath,
@@ -12,17 +13,12 @@ const {
   getAllUsers,
 } = require("./controller");
 const app = express();
+app.use(cors());
 app.use(express.json());
 
-app.get("/api/topics", getTopics);
-app.get("/api", getApiInfo);
-app.get("/api/articles/:articleId", getArticleWithID);
-app.get("/api/articles", getAllArticles);
-app.get("/api/articles/:articleId/comments", getArticleComments);
-app.post("/api/articles/:articleId/comments", addArticleComment);
-app.patch("/api/articles/:articleId",updateArticle)
-app.delete("/api/comments/:comment_id",deleteComment)
-app.get('/api/users', getAllUsers)
+const {router, articleRouter} = require('./router')
+app.use('/api',router)
+app.use('/api/articles',articleRouter)
 
 app.all("*", invalidPath);
 
@@ -45,31 +41,28 @@ app.use((err, req, res, next) => {
 });
 
 app.use((err, req, res, next) => {
-    if (err.code === "22P02") {
-      res
-        .status(400)
-        .send({ msg: "Bad Request: invalid type provided." });
-    } else {
-      next(err);
-    }
-  });
+  if (err.code === "22P02") {
+    res.status(400).send({ msg: "Bad Request: invalid type provided." });
+  } else {
+    next(err);
+  }
+});
 
-  app.use((err, req, res, next) => {
-    if (err.code === "23502") {
-      res
-        .status(400)
-        .send({ msg: "Bad Request: missing payload value." });
-    } else {
-      next(err);
-    }
-  });
-
+app.use((err, req, res, next) => {
+  if (err.code === "23502") {
+    res.status(400).send({ msg: "Bad Request: missing payload value." });
+  } else {
+    next(err);
+  }
+});
 
 app.use((err, req, res, next) => {
   if (err.code === "42703" || err.code === "23503") {
     res
       .status(404)
-      .send({ msg: "Bad Request: Parameter(s) i.e. ID provided has not been found." });
+      .send({
+        msg: "Bad Request: Parameter(s) i.e. ID provided has not been found.",
+      });
   } else {
     next(err);
   }
@@ -80,6 +73,15 @@ app.use((err, req, res, next) => {
     res
       .status(404)
       .send({ msg: "Bad Request: sorting key provided is invalid." });
+  } else {
+    next(err);
+  }
+});
+app.use((err, req, res, next) => {
+  if (err.msg === "Non-existent username") {
+    res
+      .status(404)
+      .send({ msg: "Bad Request: Username provided has not been found." });
   } else {
     next(err);
   }

@@ -139,7 +139,7 @@ exports.updateArticleVote = (articleId, newVote) => {
       "UPDATE articles SET votes = votes + %L WHERE article_id = %L RETURNING *",
       newVote,
       articleId
-    );
+    );200
     return db.query(query).then((data) => {
       return data.rows;
     });
@@ -174,3 +174,16 @@ exports.deleteCommentModel = (commentId) => {
     return data.rows;
   });
 };
+
+
+exports.fetchUsername = (username,allUser) => {
+const allUserArray = allUser.map(({username}) => {return username})
+  if (!(allUserArray.includes(username))){
+    return Promise.reject({msg: "Non-existent username"})
+  }
+  
+  const query = format(`SELECT * FROM users WHERE username = %L`, username)
+  return db.query(query).then((data)=> { 
+    return data.rows;
+  })
+}

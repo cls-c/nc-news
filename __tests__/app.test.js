@@ -632,6 +632,44 @@ describe("GET /api/articles ADDITIONAL FEATURE - sorting by key and sort order",
     return request(app)
       .get(`/api/articles?sort_by=${sortingKey}&order=${order}`)
       .expect(404)
-      .then(({ body }) => {      });
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request: sorting key provided is invalid.")
+          });
   })
+});
+
+
+describe('GET /api/users/:username ', () => {
+test("endpoint will return the corret user name hwen provided a valid and existing username", () => {
+  return request(app)
+    .get('/api/users/butter_bridge')
+    .expect(200)
+    .then(({body})=> { 
+      expect(body.user).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining(
+            {
+              username: 'butter_bridge',
+              name: 'jonny',
+              avatar_url: 'https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg'
+            }
+          )
+        ])
+      )
+    })
+  })
+  test("endpoint will return the corret user name hwen provided a invalid username", () => {
+    return request(app)
+      .get('/api/users/23456')
+      .expect(404)
+      .then(({body})=> { 
+        expect(body.msg).toEqual(
+          "Bad Request: Username provided has not been found."
+        )
+      })
+    })
+
+
+
+
 });
