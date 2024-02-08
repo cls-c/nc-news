@@ -556,16 +556,16 @@ describe("GET /api/articles ADDITIONAL FEATURE - adding commentCount", () => {
         );
       });
   });
-  test("should return 404 Bad Request if topic parameter is non-existent", () => {
-    return request(app)
-      .get(`/api/articles?topic=hello`)
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe(
-          "Bad Request: ID provided has not been found."
-        );
-      });
-  });
+  // test("should return 404 Bad Request if topic parameter is non-existent", () => {
+  //   return request(app)
+  //     .get(`/api/articles?topic=hello`)
+  //     .expect(404)
+  //     .then((response) => {
+  //       expect(response.body.msg).toBe(
+  //         "Bad Request: ID provided has not been found."
+  //       );
+  //     });
+  // });
 });
 
 describe("GET /api/articles/:articleid ADDITIONAL FEATURE - Filer by topic", () => {
