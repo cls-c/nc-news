@@ -29,11 +29,11 @@ exports.fetchArticles = (sortingKey, topic, order) => {
   let sortingOrder = "DESC";
   const acceptedTopic = ["mitch", "cats", "paper"];
   if (topic !== undefined) {
-    if (acceptedTopic.includes(topic)) {
+    // if (acceptedTopic.includes(topic)) {
       topicQuery = format("WHERE topic = %L", topic);
-    } else {
-      return Promise.reject({ msg: "Non-existent id", status: 404 });
-    }
+    // } else {
+    //   return Promise.reject({ msg: "Non-existent id", status: 404 });
+    // }
   }
 
   const acceptedSortByKey = [
