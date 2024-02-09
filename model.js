@@ -32,48 +32,54 @@ exports.fetchArticles = (sortingKey, topic, order) => {
     console.log(data.rows)
     return data.rows;
   });
-  Promise.all([topicArr]).then(([value])=>{
+  return Promise.all([topicArr]).then(([value])=>{
+    console.log(value)
+    console.log(topic)
     if (topic !== undefined) {
+      console.log(value.some(e => e.slug === topic))
       if (value.some(e => e.slug === topic)) {
-        topicQuery = format("WHERE topic = %L", topic);
-      } else {
+        topicQuery = format("WHERE articles.topic = %L", topic);
+      } 
+      else {
+        console.log('im here rejecting')
         return Promise.reject({ msg: "Non-existent id", status: 404 });
       }
     }
+    const acceptedSortByKey = [
+      "author",
+      "title",
+      "article_id",
+      "topic",
+      "votes",
+      "created_at",
+      "comment_count",
+    ];
+  
+    const acceptedSortOrderKey = ["ASC", "DESC"];
+  
+    if (sortingKey != undefined) {
+      if (acceptedSortByKey.includes(sortingKey) === false) {
+        return Promise.reject({ msg: "invalid Sort_by", status: 404 });
+      }
+      sortBy = sortingKey;
+    }
+    if (order != undefined) {
+      if (acceptedSortOrderKey.includes(order) === false) {
+        return Promise.reject({ msg: "invalid Sort_by", status: 404 });
+      }
+      sortingOrder = order;
+    }
+    const query = format(
+      `SELECT articles.author AS author,articles.title AS title,articles.article_id AS article_id,articles.topic AS topic,articles.created_at AS created_at,articles.votes AS votes,articles.article_img_url AS article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id ${topicQuery} ORDER BY ${sortBy} ${sortingOrder};`
+    );
+  
+    return db.query(query).then((data) => {
+      // console.log(data.rows)
+      return data.rows;
+    });
   })
   // const acceptedTopic = ["mitch", "cats", "paper"];
 
-  const acceptedSortByKey = [
-    "author",
-    "title",
-    "article_id",
-    "topic",
-    "votes",
-    "created_at",
-    "comment_count",
-  ];
-
-  const acceptedSortOrderKey = ["ASC", "DESC"];
-
-  if (sortingKey != undefined) {
-    if (acceptedSortByKey.includes(sortingKey) === false) {
-      return Promise.reject({ msg: "invalid Sort_by", status: 404 });
-    }
-    sortBy = sortingKey;
-  }
-  if (order != undefined) {
-    if (acceptedSortOrderKey.includes(order) === false) {
-      return Promise.reject({ msg: "invalid Sort_by", status: 404 });
-    }
-    sortingOrder = order;
-  }
-
-  const query = format(
-    `SELECT articles.author AS author,articles.title AS title,articles.article_id AS article_id,articles.topic AS topic,articles.created_at AS created_at,articles.votes AS votes,articles.article_img_url AS article_img_url, t2.count_comment AS comment_count FROM articles LEFT JOIN (SELECT article_id, COUNT(*) AS count_comment FROM comments GROUP BY article_id) AS t2 ON articles.article_id = t2.article_id ${topicQuery} ORDER BY ${sortBy} ${sortingOrder};`
-  );
-  return db.query(query).then((data) => {
-    return data.rows;
-  });
 };
 
 exports.fetchArticleComment = async (articleId) => {

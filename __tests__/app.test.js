@@ -534,7 +534,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe.only("GET /api/articles ADDITIONAL FEATURE - adding commentCount", () => {
+describe("GET /api/articles ADDITIONAL FEATURE - adding commentCount", () => {
   test("should return an array of objects, each with the following keys: title, article_idtopic, author,created_at,votes,image_img_url,comment_count  ", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
@@ -556,16 +556,16 @@ describe.only("GET /api/articles ADDITIONAL FEATURE - adding commentCount", () =
         );
       });
   });
-  // test("should return 404 Bad Request if topic parameter is non-existent", () => {
-  //   return request(app)
-  //     .get(`/api/articles?topic=hello`)
-  //     .expect(404)
-  //     .then((response) => {
-  //       expect(response.body.msg).toBe(
-  //         "Bad Request: ID provided has not been found."
-  //       );
-  //     });
-  // });
+  test("should return 404 Bad Request if topic parameter is non-existent", () => {
+    return request(app)
+      .get(`/api/articles?topic=hello`)
+      .expect(404)
+      .then((response) => {
+        expect(response.body.msg).toBe(
+          "Bad Request: ID provided has not been found."
+        );
+      });
+  });
 });
 
 describe("GET /api/articles/:articleid ADDITIONAL FEATURE - Filer by topic", () => {
