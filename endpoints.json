@@ -44,6 +44,25 @@
       ]
     }
   },
+  "PATCH /api/articles/:articleid": {
+    "description": "update and returned updated article specified by its articleid",
+    "payload": { "inc_votes": 15 },
+    "queries": [],
+    "exampleResponse": {
+      "article": [
+        {
+          "title": "Seafood substitutions are increasing",
+          "article_id": "2",
+          "topic": "cooking",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "votes": 15,
+          "image_img_url": "wwww.example.image.com"
+        }
+      ]
+    }
+  },
   "GET /api/articles/:articleid/comments": {
     "description": "return comments associated to the article array specified by its articleid",
     "queries": [],
@@ -80,40 +99,50 @@
       ]
     }
   },
-  "PATCH /api/articles/:articleid": {
-    "description": "update and returned updated article specified by its articleid",
-    "payload": { "inc_votes": 15 },
-    "queries": [],
-    "exampleResponse": {
-      "article": [
-        {
-          "title": "Seafood substitutions are increasing",
-          "article_id": "2",
-          "topic": "cooking",
-          "author": "weegembump",
-          "body": "Text from the article..",
-          "created_at": "2018-05-30T15:59:13.341Z",
-          "votes": 15,
-          "image_img_url": "wwww.example.image.com"
-        }
-      ]
-    }
-  },
   "DELETE /api/comments/:comment_id": {
     "description": "delete comments associated to the commentid",
     "queries": [],
     "exampleResponse": {}
   },
+  "PATCH /api/comments/:comment_id": {
+    "description": "update the votes associated to the comment array specified by its comment_id",
+    "payload": {
+      "inc_votes": 2
+    },
+    "queries": [],
+    "exampleResponse": {
+      "comment": [
+        {
+          "comment_id": 23,
+          "votes": 2,
+          "created_at": "2018-05-30T15:59:13.341Z",
+          "author": "weegembump",
+          "body": "Text from the article..",
+          "article_id": "2"
+        }
+      ]
+    },
   "GET /api/users": {
     "description": "return an array object containing all registered users in the users table",
     "queries": [],
     "exampleResponse": {
-      "users":         {
+      "users": {
         "username": "butter_bridge",
         "name": "jonny",
         "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
       }
-
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "return an array object containing the user specified by the username",
+    "queries": [],
+    "exampleResponse": {
+      "user": {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+      }
     }
   }
+}
 }

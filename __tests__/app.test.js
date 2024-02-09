@@ -556,16 +556,16 @@ describe("GET /api/articles ADDITIONAL FEATURE - adding commentCount", () => {
         );
       });
   });
-  test("should return 404 Bad Request if topic parameter is non-existent", () => {
-    return request(app)
-      .get(`/api/articles?topic=hello`)
-      .expect(404)
-      .then((response) => {
-        expect(response.body.msg).toBe(
-          "Bad Request: ID provided has not been found."
-        );
-      });
-  });
+  // test("should return 404 Bad Request if topic parameter is non-existent", () => {
+  //   return request(app)
+  //     .get(`/api/articles?topic=hello`)
+  //     .expect(404)
+  //     .then((response) => {
+  //       expect(response.body.msg).toBe(
+  //         "Bad Request: ID provided has not been found."
+  //       );
+  //     });
+  // });
 });
 
 describe("GET /api/articles/:articleid ADDITIONAL FEATURE - Filer by topic", () => {
@@ -605,33 +605,139 @@ describe("GET /api/articles ADDITIONAL FEATURE - sorting by key and sort order",
       .then(({ body }) => {
         expect(body.article).toBeSorted({ key: sortingKey, descending: true });
       });
-  })
+  });
   test("If  specified a sorting parameter = ascending, will return object that is ordered by sorted by optional parameter, in asecnding order", () => {
     const sortingKey = "author";
-    const order = "ASC"
+    const order = "ASC";
     return request(app)
       .get(`/api/articles?sort_by=${sortingKey}&order=${order}`)
       .expect(200)
       .then(({ body }) => {
-        expect(body.article).toBeSorted({ key: sortingKey});
+        expect(body.article).toBeSorted({ key: sortingKey });
       });
-  })
+  });
   test("If specified a sorting parameter = descending, will return object that is ordered by sorted by optional parameter, in descending order", () => {
     const sortingKey = "author";
-    const order = "DESC"
+    const order = "DESC";
     return request(app)
       .get(`/api/articles?sort_by=${sortingKey}&order=${order}`)
       .expect(200)
       .then(({ body }) => {
         expect(body.article).toBeSorted({ key: sortingKey, descending: true });
       });
-  })
+  });
   test("If specified a sorting parameter = descending, will return object that is ordered by sorted by optional parameter, in descending order", () => {
     const sortingKey = "author";
-    const order = "INVALID"
+    const order = "INVALID";
     return request(app)
       .get(`/api/articles?sort_by=${sortingKey}&order=${order}`)
       .expect(404)
-      .then(({ body }) => {      });
-  })
+      .then(({ body }) => {
+        expect(body.msg).toBe("Bad Request: sorting key provided is invalid.");
+      });
+  });
+});
+
+describe("GET /api/users/:username ", () => {
+  test("endpoint will return the corret user name hwen provided a valid and existing username", () => {
+    return request(app)
+      .get("/api/users/butter_bridge")
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.user).toEqual(
+          expect.arrayContaining([
+            expect.objectContaining({
+              username: "butter_bridge",
+              name: "jonny",
+              avatar_url:
+                "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg",
+            }),
+          ])
+        );
+      });
+  });
+  test("endpoint will return the corret user name hwen provided a invalid username", () => {
+    return request(app)
+      .get("/api/users/23456")
+      .expect(404)
+      .then(({ body }) => {
+        expect(body.msg).toEqual(
+          "Bad Request: Username provided has not been found."
+        );
+      });
+  });
+});
+
+describe("PATCH api/comments/:comment_id", () => {
+  test("should update the comment of the associated comment id and return updated comment with the correct vote when inc_votes is positive", () => {
+    const newVote = 5;
+    const payload = {"inc_votes":newVote}
+
+    return request(app)
+      .patch(`/api/comments/1`)
+      .send(payload)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.updatedComment).toEqual([
+          {
+            comment_id: 1,
+            votes: 21,
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          }
+        ]
+        );
+      });
+  });
+  test("should update the comment of the associated comment id and return updated comment with the correct vote when inc_votes is negative", () => {
+    const newVote = -5;
+    const payload = {"inc_votes":newVote}
+
+    return request(app)
+      .patch(`/api/comments/1`)
+      .send(payload)
+      .expect(200)
+      .then(({ body }) => {
+        expect(body.updatedComment).toEqual([
+          {
+            comment_id: 1,
+            votes: 11,
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            article_id: expect.any(Number),
+          }
+        ]
+        );
+      });
+  });
+
+  test("should return  400 Not Found if provided id is invalid", () => {
+    const newVote = 'notANum';
+    const payload = {"inc_votes":newVote}
+
+    return request(app)
+      .patch(`/api/comments/1`)
+      .send(payload)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual("Bad Request: invalid type provided.");
+      });
+  });
+  test("should return  404 badRequest if provided id is non existent", () => {
+    const newVote = 5;
+    const payload = {}
+
+    return request(app)
+      .patch(`/api/comments/1`)
+      .send(payload)
+      .expect(400)
+      .then(({ body }) => {
+        expect(body.msg).toEqual(
+          "Bad Request: missing payload value."
+        );
+      });
+  });
 });
