@@ -42,6 +42,7 @@ exports.fetchArticles = (sortingKey, topic,order) => {
     "article_id",
     "topic",
     "votes",
+    "created_at",
     "comment_count",
   ];
 
