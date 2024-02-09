@@ -27,14 +27,21 @@ exports.fetchArticles = (sortingKey, topic, order) => {
   let sortBy = "created_at";
   let topicQuery = "";
   let sortingOrder = "DESC";
-  const acceptedTopic = ["mitch", "cats", "paper"];
-  if (topic !== undefined) {
-    // if (acceptedTopic.includes(topic)) {
-      topicQuery = format("WHERE topic = %L", topic);
-    // } else {
-    //   return Promise.reject({ msg: "Non-existent id", status: 404 });
-    // }
-  }
+  const fetchTopicQuery = format(`SELECT * FROM topics;`);
+  const topicArr = db.query(fetchTopicQuery).then((data) => {
+    console.log(data.rows)
+    return data.rows;
+  });
+  Promise.all([topicArr]).then(([value])=>{
+    if (topic !== undefined) {
+      if (value.some(e => e.slug === topic)) {
+        topicQuery = format("WHERE topic = %L", topic);
+      } else {
+        return Promise.reject({ msg: "Non-existent id", status: 404 });
+      }
+    }
+  })
+  // const acceptedTopic = ["mitch", "cats", "paper"];
 
   const acceptedSortByKey = [
     "author",

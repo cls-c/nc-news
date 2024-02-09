@@ -534,7 +534,7 @@ describe("GET /api/users", () => {
   });
 });
 
-describe("GET /api/articles ADDITIONAL FEATURE - adding commentCount", () => {
+describe.only("GET /api/articles ADDITIONAL FEATURE - adding commentCount", () => {
   test("should return an array of objects, each with the following keys: title, article_idtopic, author,created_at,votes,image_img_url,comment_count  ", () => {
     return request(app)
       .get("/api/articles?topic=mitch")
